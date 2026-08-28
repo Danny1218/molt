@@ -228,6 +228,25 @@ app.get('/api/tripwire/strategy/current', async (req, res) => {
   }
 });
 
+// API: Get specific strategy version
+app.get('/api/tripwire/strategy/:version', async (req, res) => {
+  try {
+    const version = req.params.version;
+    const filename = `${version}_test.md`;
+    const filepath = join(__dirname, '../data/tripwire/strategies', filename);
+    
+    const fs = await import('fs');
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ error: `Strategy ${version} not found` });
+    }
+    
+    const content = readFileSync(filepath, 'utf-8');
+    res.json({ version, content, filename });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // API: Run TRIPWIRE test
 app.post('/api/tripwire/run', async (req, res) => {
   try {
