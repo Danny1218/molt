@@ -49,6 +49,9 @@ npm start
 # Run tests
 npm test
 
+# Inspect repair inbox (after v1 fails)
+npm run inspect:inbox
+
 # Reset demo (clears runs, restores v1)
 npm run demo:reset
 ```
