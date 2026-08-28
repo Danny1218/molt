@@ -278,7 +278,8 @@
           break;
           
         case 'kane_complete':
-          log.innerHTML += `<div class="progress success">Kane completed: ${data.status}</div>`;
+          const overallStatus = data.overall_status || data.status;
+          log.innerHTML += `<div class="progress success">Kane completed: ${overallStatus}</div>`;
           break;
           
         case 'test_passed':
@@ -374,12 +375,25 @@
     function displayResults(result) {
       document.getElementById('results-section').style.display = 'block';
       
-      // Kane verdict
-      const kaneStatus = result.kane_result.status;
-      const kaneClass = kaneStatus === 'PASS' ? 'status-pass' : 'status-fail';
+      // Kane verdict with overall_status
+      const kaneStatus = result.kane_result.overall_status || result.kane_result.status;
+      const kaneClass = kaneStatus === 'passed' || kaneStatus === 'PASS' ? 'status-pass' : 'status-fail';
+      
+      // Build detailed verdict text
+      let verdictDetails = result.kane_result.summary;
+      if (result.kane_result.final_state) {
+        const fs = result.kane_result.final_state;
+        verdictDetails += '<br><br><strong>Observed State:</strong><br>';
+        if (fs.product_name) verdictDetails += `Product: ${fs.product_name}<br>`;
+        if (fs.quantity) verdictDetails += `Quantity: ${fs.quantity}<br>`;
+        if (fs.shipping) verdictDetails += `Shipping: ${fs.shipping}<br>`;
+        if (fs.warranty !== undefined) verdictDetails += `Warranty: ${fs.warranty}<br>`;
+        if (fs.total) verdictDetails += `Total: $${fs.total}`;
+      }
+      
       document.getElementById('kane-verdict').innerHTML = `
-        <div class="${kaneClass}">${kaneStatus}</div>
-        <div style="margin-top: 10px;">${result.kane_result.summary}</div>
+        <div class="${kaneClass}">${kaneStatus.toUpperCase()}</div>
+        <div style="margin-top: 10px;">${verdictDetails}</div>
         ${result.kane_result.reason ? `<div style="margin-top: 10px; color: #888;">${result.kane_result.reason}</div>` : ''}
       `;
       

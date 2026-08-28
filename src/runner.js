@@ -59,8 +59,21 @@ export async function executeKane(strategyFile, portalUrl, testName, broadcast) 
         const data = parseKaneOutput(line);
         if (!data) continue;
 
-        // Parse run_end by type field
-        if (data.type === 'run_end') {
+        // Parse test_md_summary with overall_status (Kane testmd emits many run_end lines)
+        if (data.test_md_summary && data.test_md_summary.overall_status) {
+          runEndData = {
+            type: 'test_md_summary',
+            status: data.test_md_summary.overall_status.toUpperCase(),
+            summary: data.test_md_summary.summary || 'Test completed',
+            reason: data.test_md_summary.reason,
+            duration: data.test_md_summary.duration,
+            final_state: data.test_md_summary.final_state || {},
+            session_dir: data.test_md_summary.session_dir,
+            run_dir: data.test_md_summary.run_dir,
+            overall_status: data.test_md_summary.overall_status
+          };
+        } else if (data.type === 'run_end' && !runEndData) {
+          // Fallback to run_end if test_md_summary not found
           runEndData = data;
         } else if (data.step && data.status) {
           // Progress lines
@@ -87,10 +100,11 @@ export async function executeKane(strategyFile, portalUrl, testName, broadcast) 
       if (runEndData) {
         resolve({
           status: runEndData.status,
+          overall_status: runEndData.overall_status,
           summary: runEndData.summary,
           reason: runEndData.reason,
           duration: runEndData.duration,
-          final_state: runEndData.final_state,
+          final_state: runEndData.final_state || {},
           session_dir: runEndData.session_dir,
           run_dir: runEndData.run_dir,
           progress: progressData
@@ -98,7 +112,7 @@ export async function executeKane(strategyFile, portalUrl, testName, broadcast) 
       } else if (code === 0) {
         resolve({
           status: 'UNKNOWN',
-          summary: 'Kane completed but no run_end data received',
+          summary: 'Kane completed but no test_md_summary received',
           progress: progressData
         });
       } else {
