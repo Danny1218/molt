@@ -34,7 +34,15 @@ export async function executeKane(strategyFile, portalUrl, testName, broadcast) 
 
     console.log(`Executing: kane-cli ${args.join(' ')}`);
 
-    const proc = spawn('kane-cli', args, { shell: false });
+    // Ensure PATH includes node_modules/.bin for kane-cli
+    const env = { ...process.env };
+    const nodeModulesBin = join(__dirname, '../node_modules/.bin');
+    env.PATH = `${nodeModulesBin}:${env.PATH}`;
+
+    const proc = spawn('kane-cli', args, { 
+      shell: false,
+      env
+    });
 
     let progressData = [];
     let runEndData = null;
@@ -51,7 +59,11 @@ export async function executeKane(strategyFile, portalUrl, testName, broadcast) 
         const data = parseKaneOutput(line);
         if (!data) continue;
 
-        if (data.step && data.status) {
+        // Parse run_end by type field
+        if (data.type === 'run_end') {
+          runEndData = data;
+        } else if (data.step && data.status) {
+          // Progress lines
           progressData.push(data);
           broadcast?.({
             type: 'kane_progress',
@@ -59,8 +71,6 @@ export async function executeKane(strategyFile, portalUrl, testName, broadcast) 
             status: data.status,
             remark: data.remark
           });
-        } else if (data.status && data.summary) {
-          runEndData = data;
         }
       }
     });
