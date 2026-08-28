@@ -129,13 +129,14 @@ Your task is to explore the CURRENT UI and find the correct path to accomplish t
       ]
 
       const proc = spawn('kane-cli', args, {
-        shell: true,
+        shell: false,
         env: { ...process.env }
       })
 
       this.currentRun = proc
       let ndJsonBuffer = ''
       let lastRunEnd: KaneNDJSONLine | null = null
+      const steps: Array<{ step?: string; status?: string; remark?: string }> = []
 
       proc.stdout?.on('data', (data) => {
         const chunk = data.toString()
@@ -152,6 +153,15 @@ Your task is to explore the CURRENT UI and find the correct path to accomplish t
             
             if (parsed.type === 'run_end') {
               lastRunEnd = parsed
+            }
+            
+            // Collect step information from progress lines
+            if (parsed.step && parsed.status) {
+              steps.push({
+                step: parsed.step,
+                status: parsed.status,
+                remark: parsed.remark
+              })
             }
             
             if (onProgress) {
@@ -211,7 +221,7 @@ Your task is to explore the CURRENT UI and find the correct path to accomplish t
       ]
 
       const proc = spawn('kane-cli', args, {
-        shell: true,
+        shell: false,
         env: { ...process.env }
       })
 
