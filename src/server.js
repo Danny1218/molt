@@ -292,6 +292,24 @@ app.get('/api/tripwire/runs', async (req, res) => {
   }
 });
 
+// API: Get specific run by ID
+app.get('/api/tripwire/runs/:runId', async (req, res) => {
+  try {
+    const fs = await import('fs');
+    const runId = req.params.runId;
+    const filePath = join(__dirname, '../artifacts/runs', runId, 'kane.json');
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Run not found' });
+    }
+    
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    res.json({ id: runId, ...data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // API: Get repair inbox status
 app.get('/api/tripwire/repair/status', async (req, res) => {
   try {
