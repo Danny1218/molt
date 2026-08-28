@@ -1,11 +1,6 @@
 node_modules/
-dist/
-data/
-.env
+artifacts/
+data/tripwire/repair/*.json
+!data/tripwire/repair/inbox.json
 *.log
-.DS_Store
-.testmuai/
-sessions/
-*.session/
-.vscode/
-.idea/
+.env

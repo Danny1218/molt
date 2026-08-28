@@ -1,7 +1,0 @@
-{"type":"run_start","timestamp":"2024-01-15T10:00:00.000Z","run_id":"molt-test-fail","session_dir":"/home/user/.testmuai/sessions/molt-test-fail","run_dir":"/home/user/.testmuai/sessions/molt-test-fail/runs/run-002"}
-{"type":"progress","timestamp":"2024-01-15T10:00:01.000Z","message":"Navigating to http://localhost:3000/portal"}
-{"type":"progress","timestamp":"2024-01-15T10:00:02.000Z","message":"Looking for sidebar item 'Billing'"}
-{"type":"step","action":"search","target":"Billing","status":"failed","remark":"Could not find sidebar item with text 'Billing'","timestamp":"2024-01-15T10:00:03.000Z"}
-{"type":"progress","timestamp":"2024-01-15T10:00:03.500Z","message":"Attempting to locate alternative navigation"}
-{"type":"step","action":"search","target":"Invoices","status":"failed","remark":"Element with label 'Invoices' not found in current UI","timestamp":"2024-01-15T10:00:04.000Z"}
-{"type":"run_end","timestamp":"2024-01-15T10:00:05.000Z","status":"failed","summary":"Workflow failed to complete","reason":"Could not find required UI elements. The sidebar item 'Billing' and navigation item 'Invoices' are not present in the interface. The UI structure appears to have changed.","duration":5,"session_dir":"/home/user/.testmuai/sessions/molt-test-fail","run_dir":"/home/user/.testmuai/sessions/molt-test-fail/runs/run-002"}
