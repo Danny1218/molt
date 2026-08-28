@@ -1,5 +1,6 @@
 node_modules/
 artifacts/
-data/tripwire/repair/
+data/tripwire/repair/*.json
+!data/tripwire/repair/inbox.json
 *.log
 .env
