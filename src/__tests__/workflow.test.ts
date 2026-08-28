@@ -32,7 +32,11 @@ describe('WorkflowStore', () => {
   })
 
   it('should save and retrieve workflow versions', async () => {
-    const v2Workflow = store.getDefaultV2Workflow()
+    const v2Workflow = `# Test Workflow V2
+Navigate to {{portal_url}}
+Click Finance
+Click Documents
+`
     await store.saveWorkflow('v2', v2Workflow)
     
     const retrieved = await store.getWorkflowVersion('v2')
