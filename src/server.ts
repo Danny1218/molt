@@ -48,7 +48,18 @@ async function saveSkin(skin: string) {
 await loadSkin()
 
 app.use(express.json())
-app.use(express.static(path.join(__dirname, '../dist/client')))
+
+// Serve portal and console
+app.get('/portal*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'portal/index.html'))
+})
+
+app.get('/', (req, res) => {
+  if (PORTAL_ONLY) {
+    return res.redirect('/portal')
+  }
+  res.sendFile(path.join(__dirname, 'client/index.html'))
+})
 
 // API: Get current portal skin
 app.get('/api/portal/skin', (req, res) => {
@@ -166,16 +177,9 @@ wss.on('connection', (ws) => {
   })
 })
 
-// Serve portal and console
-app.get('/portal*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'portal/index.html'))
-})
-
+// Fallback for all other routes
 app.get('*', (req, res) => {
-  if (PORTAL_ONLY) {
-    return res.redirect('/portal')
-  }
-  res.sendFile(path.join(__dirname, '../dist/client/index.html'))
+  res.status(404).json({ error: 'Not found' })
 })
 
 server.listen(PORT, () => {
