@@ -153,7 +153,7 @@ app.post('/api/workflow/run', async (req, res) => {
   const workflowPath = path.join(__dirname, '../data/current_test.md')
   
   try {
-    await repairOrchestrator.runWorkflowWithRepair(portalUrl, workflowPath)
+    await repairOrchestrator.runWorkflowWithRepair(portalUrl, workflowPath, currentSkin)
   } catch (err) {
     console.error('Workflow run failed:', err)
     wsClients.forEach(client => {
