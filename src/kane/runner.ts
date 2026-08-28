@@ -13,8 +13,8 @@ export interface KaneResult {
   sessionDir?: string
   runDir?: string
   steps?: Array<{
-    action: string
-    status: string
+    step?: string
+    status?: string
     remark?: string
   }>
 }
@@ -90,15 +90,14 @@ export class KaneRunner {
     this.runLock = true
 
     try {
-      const objective = `${goal}
+      const objective = `Go to ${portalUrl}. ${goal}
 
 IMPORTANT: The previous workflow failed with this error:
 ${previousFailure}
 
-Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path to accomplish the goal. Do not look for the old UI elements mentioned in the error. Discover what is actually present in the interface now.`
+Your task is to explore the CURRENT UI and find the correct path to accomplish the goal. Do not look for the old UI elements mentioned in the error. Discover what is actually present in the interface now.`
 
       const result = await this.executeKaneRun(
-        portalUrl,
         objective,
         `molt-repair-${attemptNumber}`,
         onProgress
@@ -125,8 +124,8 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
         '--headless',
         '--timeout',
         '180',
-        '--var',
-        `portal_url=${portalUrl}`
+        '--variables',
+        JSON.stringify({ portal_url: { value: portalUrl } })
       ]
 
       const proc = spawn('kane-cli', args, {
@@ -170,7 +169,7 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
 
       proc.on('close', async (code) => {
         if (lastRunEnd) {
-          const result = this.parseRunEnd(lastRunEnd)
+          const result = this.parseRunEnd(lastRunEnd, steps)
           
           // Copy evidence
           if (lastRunEnd.run_dir) {
@@ -182,7 +181,8 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
           resolve({
             status: 'error',
             summary: 'Kane process completed but no run_end event received',
-            duration: '0s'
+            duration: '0s',
+            steps
           })
         }
       })
@@ -194,7 +194,6 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
   }
 
   private async executeKaneRun(
-    url: string,
     objective: string,
     name: string,
     onProgress?: (line: KaneNDJSONLine) => void
@@ -202,16 +201,13 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
     return new Promise((resolve, reject) => {
       const args = [
         'run',
+        objective,
         '--agent',
         '--headless',
         '--timeout',
         '180',
         '--name',
-        name,
-        '--url',
-        url,
-        '--objective',
-        objective
+        name
       ]
 
       const proc = spawn('kane-cli', args, {
@@ -222,6 +218,7 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
       this.currentRun = proc
       let ndJsonBuffer = ''
       let lastRunEnd: KaneNDJSONLine | null = null
+      const steps: Array<{ step?: string; status?: string; remark?: string }> = []
 
       proc.stdout?.on('data', (data) => {
         const chunk = data.toString()
@@ -240,6 +237,15 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
               lastRunEnd = parsed
             }
             
+            // Collect step information from progress lines
+            if (parsed.step && parsed.status) {
+              steps.push({
+                step: parsed.step,
+                status: parsed.status,
+                remark: parsed.remark
+              })
+            }
+            
             if (onProgress) {
               onProgress(parsed)
             }
@@ -255,7 +261,7 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
 
       proc.on('close', async (code) => {
         if (lastRunEnd) {
-          const result = this.parseRunEnd(lastRunEnd)
+          const result = this.parseRunEnd(lastRunEnd, steps)
           
           // Copy evidence
           if (lastRunEnd.run_dir) {
@@ -267,7 +273,8 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
           resolve({
             status: 'error',
             summary: 'Kane process completed but no run_end event received',
-            duration: '0s'
+            duration: '0s',
+            steps
           })
         }
       })
@@ -278,20 +285,21 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
     })
   }
 
-  private parseRunEnd(runEnd: KaneNDJSONLine): KaneResult {
+  private parseRunEnd(runEnd: KaneNDJSONLine, steps: Array<{ step?: string; status?: string; remark?: string }>): KaneResult {
     return {
       status: runEnd.status === 'passed' ? 'passed' : 'failed',
       summary: runEnd.summary || 'No summary available',
       reason: runEnd.reason,
-      duration: this.formatDuration(runEnd.duration_ms),
+      duration: this.formatDuration(runEnd.duration),
       sessionDir: runEnd.session_dir,
-      runDir: runEnd.run_dir
+      runDir: runEnd.run_dir,
+      steps
     }
   }
 
-  private formatDuration(ms: number | undefined): string {
-    if (!ms) return '0s'
-    const seconds = Math.floor(ms / 1000)
+  private formatDuration(duration: number | undefined): string {
+    if (!duration) return '0s'
+    const seconds = Math.floor(duration)
     if (seconds < 60) return `${seconds}s`
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = seconds % 60
@@ -303,19 +311,27 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
       const evidenceDir = path.join(__dirname, '../../data/evidence', attemptId)
       await fs.mkdir(evidenceDir, { recursive: true })
 
-      // Copy NDJSON
-      const ndJsonPath = path.join(runDir, 'run.ndjson')
+      // Copy actions.ndjson from run-test/
+      const actionsPath = path.join(runDir, 'run-test', 'actions.ndjson')
       try {
-        await fs.copyFile(ndJsonPath, path.join(evidenceDir, 'run.ndjson'))
+        await fs.copyFile(actionsPath, path.join(evidenceDir, 'actions.ndjson'))
       } catch {}
 
-      // Copy Result.md
-      const resultPath = path.join(runDir, 'Result.md')
+      // Copy Result.md from output-* directory
       try {
-        await fs.copyFile(resultPath, path.join(evidenceDir, 'Result.md'))
+        const dirContents = await fs.readdir(runDir)
+        for (const item of dirContents) {
+          if (item.startsWith('output-')) {
+            const resultPath = path.join(runDir, item, 'Result.md')
+            try {
+              await fs.copyFile(resultPath, path.join(evidenceDir, 'Result.md'))
+              break
+            } catch {}
+          }
+        }
       } catch {}
 
-      // Copy screenshots
+      // Copy screenshots if they exist
       const screenshotsDir = path.join(runDir, 'screenshots')
       try {
         const screenshots = await fs.readdir(screenshotsDir)
@@ -334,14 +350,55 @@ Your task is to explore the CURRENT UI at ${portalUrl} and find the correct path
     }
   }
 
-  async extractTestMdFromRun(runDir: string): Promise<string | null> {
+  async extractTestMdFromRun(runName: string, runDir: string): Promise<string | null> {
+    // Try ~/.testmuai/tests/<name>_test.md first
+    const homeDir = process.env.HOME || process.env.USERPROFILE
+    if (homeDir) {
+      try {
+        const testMdPath = path.join(homeDir, '.testmuai', 'tests', `${runName}_test.md`)
+        const content = await fs.readFile(testMdPath, 'utf-8')
+        return content
+      } catch {}
+    }
+
+    // Try cwd .testmuai/tests/
     try {
-      // Kane saves generated workflows in the run directory
+      const testMdPath = path.join(process.cwd(), '.testmuai', 'tests', `${runName}_test.md`)
+      const content = await fs.readFile(testMdPath, 'utf-8')
+      return content
+    } catch {}
+
+    // Try run directory as fallback
+    try {
       const testMdPath = path.join(runDir, '_test.md')
       const content = await fs.readFile(testMdPath, 'utf-8')
       return content
-    } catch {
+    } catch {}
+
+    return null
+  }
+
+  synthesizeWorkflowFromSteps(steps: Array<{ step?: string; status?: string; remark?: string }>, portalUrl: string): string | null {
+    if (!steps || steps.length === 0) {
       return null
     }
+
+    const successfulSteps = steps.filter(s => s.status === 'success' || s.status === 'passed')
+    if (successfulSteps.length === 0) {
+      return null
+    }
+
+    let workflow = `# Download Invoice\n\nNavigate to ${portalUrl}\n\n`
+    
+    for (const step of successfulSteps) {
+      if (step.step && step.remark) {
+        // Use the exact labels from Kane's remarks
+        workflow += `${step.step}\n\n`
+      }
+    }
+
+    workflow += `Assert a PDF download or success toast\n`
+
+    return workflow
   }
 }
