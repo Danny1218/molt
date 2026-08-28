@@ -165,3 +165,22 @@ TRIPWIRE is pure adversarial CI for browser agents.
 ## License
 
 MIT
+
+## Documentation
+
+- **[README.md](README.md)** — Project overview and quick start
+- **[CURRENT_STATE.md](CURRENT_STATE.md)** — Implementation status and known issues
+- **[docs/STRATEGY_V1_FAILURES.md](docs/STRATEGY_V1_FAILURES.md)** — Expected v1 failure modes and vulnerabilities
+- **[docs/REPAIR_AGENT_GUIDE.md](docs/REPAIR_AGENT_GUIDE.md)** — Complete repair workflow for AI agents
+
+## Repair Agent Workflow
+
+When strategy v1 fails, TRIPWIRE creates a repair inbox with full context:
+
+1. **Inspect failure**: `npm run inspect:inbox`
+2. **Analyze attacks**: Read which attacks succeeded and why
+3. **Write improved strategy**: Create `data/tripwire/strategies/v2_test.md`
+4. **Auto-rerun**: File watcher detects v2 and reruns Kane
+5. **Iterate**: If v2 fails, write v3 (max 2 repairs)
+
+See [docs/REPAIR_AGENT_GUIDE.md](docs/REPAIR_AGENT_GUIDE.md) for detailed workflow and strategy templates.
