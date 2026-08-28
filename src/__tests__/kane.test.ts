@@ -22,7 +22,7 @@ describe('Kane NDJSON Parser', () => {
     expect(runEnd).toBeTruthy()
     expect(runEnd?.status).toBe('passed')
     expect(runEnd?.summary).toContain('downloaded invoice')
-    expect(runEnd?.duration_ms).toBe(8000)
+    expect(runEnd?.duration).toBe(8)
   })
 
   it('should parse failed Kane run', async () => {
