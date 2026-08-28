@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      transition: all 0.3s ease;
+    }
+    
+    /* V1 Theme - Clean SaaS Blue */
+    body.v1 {
+      background: #f7f9fc;
+      color: #1a1a1a;
+    }
+    
+    body.v1 .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    body.v1 .sidebar {
+      background: white;
+      border-right: 1px solid #e5e7eb;
+    }
+    
+    body.v1 .sidebar-item:hover {
+      background: #f3f4f6;
+      color: #667eea;
+    }
+    
+    body.v1 .sidebar-item.active {
+      background: #eef2ff;
+      color: #667eea;
+      border-left: 3px solid #667eea;
+    }
+    
+    body.v1 .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    body.v1 .btn-primary:hover {
+      background: #5568d3;
+    }
+    
+    /* V2 Theme - Dense Finance Dark/Green */
+    body.v2 {
+      background: #0f1419;
+      color: #e8eaed;
+    }
+    
+    body.v2 .header {
+      background: linear-gradient(135deg, #1a4d2e 0%, #0f2922 100%);
+    }
+    
+    body.v2 .sidebar {
+      background: #1a1f26;
+      border-right: 1px solid #2d3748;
+    }
+    
+    body.v2 .sidebar-item:hover {
+      background: #2d3748;
+      color: #4ade80;
+    }
+    
+    body.v2 .sidebar-item.active {
+      background: #1e3a2a;
+      color: #4ade80;
+      border-left: 3px solid #4ade80;
+    }
+    
+    body.v2 .content {
+      background: #1a1f26;
+    }
+    
+    body.v2 .card {
+      background: #0f1419;
+      border: 1px solid #2d3748;
+    }
+    
+    body.v2 .btn-primary {
+      background: #4ade80;
+      color: #0f1419;
+    }
+    
+    body.v2 .btn-primary:hover {
+      background: #22c55e;
+    }
+    
+    body.v2 h1, body.v2 h2 {
+      color: #e8eaed;
+    }
+    
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      color: white;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .deploy-btn {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .deploy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .main {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+    
+    .sidebar {
+      width: 240px;
+      padding: 16px 0;
+    }
+    
+    .sidebar-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+    }
+    
+    .content h2 {
+      font-size: 28px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    
+    .nav-breadcrumb {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-info h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    
+    .card-info p {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    
+    .btn-primary {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body class="v1">
+  <div class="header">
+    <h1>Business Portal</h1>
+    <button class="deploy-btn" onclick="toggleRedesign()">
+      🚀 DEPLOY REDESIGN
+    </button>
+  </div>
+  
+  <div class="main">
+    <div class="sidebar" id="sidebar">
+      <!-- Populated by JS -->
+    </div>
+    
+    <div class="content" id="content">
+      <div class="nav-breadcrumb" id="breadcrumb"></div>
+      <!-- Populated by JS -->
+    </div>
+  </div>
+  
+  <script>
+    let currentSkin = 'v1'
+    let currentView = 'home'
+    
+    const views = {
+      v1: {
+        sidebar: ['Dashboard', 'Billing', 'Settings'],
+        routes: {
+          home: { title: 'Dashboard', content: 'Welcome to your dashboard' },
+          billing: { 
+            title: 'Billing', 
+            nav: 'Billing',
+            content: 'billing-nav',
+            subroutes: ['Invoices', 'Payment Methods']
+          },
+          invoices: {
+            title: 'Invoices',
+            nav: 'Billing > Invoices',
+            content: 'invoices-list'
+          }
+        }
+      },
+      v2: {
+        sidebar: ['Overview', 'Finance', 'Administration'],
+        routes: {
+          home: { title: 'Overview', content: 'Welcome to your overview' },
+          finance: {
+            title: 'Finance',
+            nav: 'Finance',
+            content: 'finance-nav',
+            subroutes: ['Documents', 'Transactions']
+          },
+          documents: {
+            title: 'Documents',
+            nav: 'Finance > Documents',
+            content: 'documents-nav',
+            subroutes: ['Statements', 'Reports']
+          },
+          statements: {
+            title: 'Statements',
+            nav: 'Finance > Documents > Statements',
+            content: 'statements-list'
+          }
+        }
+      }
+    }
+    
+    async function loadSkin() {
+      const res = await fetch('/api/portal/skin')
+      const data = await res.json()
+      currentSkin = data.skin
+      document.body.className = currentSkin
+      renderSidebar()
+      renderContent()
+    }
+    
+    async function toggleRedesign() {
+      const newSkin = currentSkin === 'v1' ? 'v2' : 'v1'
+      await fetch('/api/portal/skin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skin: newSkin })
+      })
+      currentSkin = newSkin
+      currentView = 'home'
+      document.body.className = currentSkin
+      renderSidebar()
+      renderContent()
+    }
+    
+    function renderSidebar() {
+      const sidebar = document.getElementById('sidebar')
+      const items = views[currentSkin].sidebar
+      sidebar.innerHTML = items.map(item => 
+        `<div class="sidebar-item" onclick="navigate('${item.toLowerCase()}')">${item}</div>`
+      ).join('')
+    }
+    
+    function navigate(view) {
+      if (view === 'dashboard' || view === 'overview' || view === 'settings' || view === 'administration') {
+        currentView = 'home'
+      } else {
+        currentView = view
+      }
+      renderContent()
+    }
+    
+    function renderContent() {
+      const contentEl = document.getElementById('content')
+      const breadcrumbEl = document.getElementById('breadcrumb')
+      const viewConfig = views[currentSkin].routes[currentView] || views[currentSkin].routes.home
+      
+      breadcrumbEl.textContent = viewConfig.nav || ''
+      
+      let html = `<h2>${viewConfig.title}</h2>`
+      
+      if (viewConfig.content === 'billing-nav') {
+        html += viewConfig.subroutes.map(route => 
+          `<div class="card">
+            <div class="card-info">
+              <h3>${route}</h3>
+              <p>Manage your ${route.toLowerCase()}</p>
+            </div>
+            <button class="btn-primary" onclick="navigate('${route.toLowerCase().replace(' ', '')}')">${route}</button>
+          </div>`
+        ).join('')
+      } else if (viewConfig.content === 'finance-nav') {
+        html += viewConfig.subroutes.map(route => 
+          `<div class="card">
+            <div class="card-info">
+              <h3>${route}</h3>
+              <p>View ${route.toLowerCase()}</p>
+            </div>
+            <button class="btn-primary" onclick="navigate('${route.toLowerCase()}')">${route}</button>
+          </div>`
+        ).join('')
+      } else if (viewConfig.content === 'documents-nav') {
+        html += viewConfig.subroutes.map(route => 
+          `<div class="card">
+            <div class="card-info">
+              <h3>${route}</h3>
+              <p>Access ${route.toLowerCase()}</p>
+            </div>
+            <button class="btn-primary" onclick="navigate('${route.toLowerCase()}')">${route}</button>
+          </div>`
+        ).join('')
+      } else if (viewConfig.content === 'invoices-list') {
+        html += `
+          <div class="card">
+            <div class="card-info">
+              <h3>Invoice #2024-001</h3>
+              <p>January 2024 • $1,250.00</p>
+            </div>
+            <button class="btn-primary" onclick="downloadInvoice('2024-001')">Download</button>
+          </div>
+          <div class="card">
+            <div class="card-info">
+              <h3>Invoice #2023-012</h3>
+              <p>December 2023 • $1,180.00</p>
+            </div>
+            <button class="btn-primary" onclick="downloadInvoice('2023-012')">Download</button>
+          </div>
+        `
+      } else if (viewConfig.content === 'statements-list') {
+        html += `
+          <div class="card">
+            <div class="card-info">
+              <h3>Statement #2024-001</h3>
+              <p>January 2024 • $1,250.00</p>
+            </div>
+            <button class="btn-primary" onclick="exportStatement('2024-001')">Export PDF</button>
+          </div>
+          <div class="card">
+            <div class="card-info">
+              <h3>Statement #2023-012</h3>
+              <p>December 2023 • $1,180.00</p>
+            </div>
+            <button class="btn-primary" onclick="exportStatement('2023-012')">Export PDF</button>
+          </div>
+        `
+      } else {
+        html += `<p>${viewConfig.content}</p>`
+      }
+      
+      contentEl.innerHTML = html
+    }
+    
+    function downloadInvoice(id) {
+      window.location.href = `/api/portal/invoice/${id}`
+      showToast('Invoice downloaded successfully!')
+    }
+    
+    function exportStatement(id) {
+      window.location.href = `/api/portal/invoice/${id}`
+      showToast('Statement exported successfully!')
+    }
+    
+    function showToast(message) {
+      const toast = document.createElement('div')
+      toast.className = 'toast'
+      toast.textContent = message
+      document.body.appendChild(toast)
+      setTimeout(() => toast.remove(), 3000)
+    }
+    
+    // WebSocket for live skin updates
+    const ws = new WebSocket(`ws://${location.host}/ws`)
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      if (data.type === 'skin_changed') {
+        currentSkin = data.skin
+        currentView = 'home'
+        document.body.className = currentSkin
+        renderSidebar()
+        renderContent()
+      }
+    }
+    
+    // Initialize
+    loadSkin()
+  </script>
+</body>
+</html>
