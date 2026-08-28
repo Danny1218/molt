@@ -1,18 +1,30 @@
 import express from 'express'
-import { WebSocketServer } from 'ws'
+import { WebSocketServer, WebSocket } from 'ws'
 import { createServer } from 'http'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs/promises'
+import { KaneRunner } from './kane/runner.js'
+import { WorkflowStore } from './store/workflow.js'
+import { RepairOrchestrator } from './kane/repair.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 const server = createServer(app)
 const wss = new WebSocketServer({ server, path: '/ws' })
+const wsClients = new Set<WebSocket>()
 
 const PORT = process.env.PORT || 3000
 const PORTAL_ONLY = process.argv.includes('--portal-only')
+
+// Initialize Kane and workflow store
+const kaneRunner = KaneRunner.getInstance()
+const workflowStore = new WorkflowStore()
+const repairOrchestrator = new RepairOrchestrator(wsClients)
+
+await workflowStore.init()
+await repairOrchestrator.initialize()
 
 // Skin state (toggle between V1 and V2)
 const SKIN_FILE = path.join(__dirname, '../data/portal-skin.json')
@@ -104,41 +116,54 @@ app.get('/api/workflow/:version', async (req, res) => {
 // API: Get current workflow
 app.get('/api/workflow/current', async (req, res) => {
   try {
-    const filePath = path.join(__dirname, '../data/current_test.md')
-    const content = await fs.readFile(filePath, 'utf-8')
+    const content = await workflowStore.getCurrentWorkflow()
     res.json({ content })
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load workflow' })
+  }
+})
+
+// API: Check Kane status
+app.get('/api/kane/status', async (req, res) => {
+  try {
+    const available = await kaneRunner.checkAvailable()
+    res.json({ available })
   } catch {
-    // Return default V1 workflow
-    const defaultWorkflow = `# Download Invoice
-
-Navigate to {{portal_url}}
-
-Click sidebar item whose visible text is exactly "Billing"
-
-Click nav labeled exactly "Invoices"
-
-Assert heading is "Invoices"
-
-Click the latest invoice row
-
-Click button labeled exactly "Download"
-
-Assert a PDF download or success toast
-`
-    res.json({ content: defaultWorkflow })
+    res.json({ available: false })
   }
 })
 
 // API: Run Kane workflow
 app.post('/api/workflow/run', async (req, res) => {
-  // This endpoint will trigger Kane execution
-  // Implementation in kane module
   res.json({ status: 'started', runId: Date.now().toString() })
+  
+  // Run asynchronously
+  const portalUrl = `http://localhost:${PORT}/portal`
+  const workflowPath = path.join(__dirname, '../data/current_test.md')
+  
+  try {
+    await repairOrchestrator.runWorkflowWithRepair(portalUrl, workflowPath)
+  } catch (err) {
+    console.error('Workflow run failed:', err)
+    wsClients.forEach(client => {
+      if (client.readyState === 1) {
+        client.send(JSON.stringify({
+          type: 'workflow_error',
+          error: err instanceof Error ? err.message : 'Unknown error'
+        }))
+      }
+    })
+  }
 })
 
 // WebSocket for real-time updates
 wss.on('connection', (ws) => {
+  wsClients.add(ws)
   ws.send(JSON.stringify({ type: 'connected' }))
+  
+  ws.on('close', () => {
+    wsClients.delete(ws)
+  })
 })
 
 // Serve portal and console
