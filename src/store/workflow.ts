@@ -43,6 +43,10 @@ export class WorkflowStore {
     }
   }
 
+  getCurrentWorkflowPath(): string {
+    return this.currentWorkflowPath
+  }
+
   async saveWorkflow(version: string, content: string): Promise<void> {
     const versionPath = path.join(this.versionsDir, `${version}_test.md`)
     await fs.writeFile(versionPath, content)
@@ -115,29 +119,6 @@ Assert heading is "Invoices"
 Click the latest invoice row
 
 Click button labeled exactly "Download"
-
-Assert a PDF download or success toast
-`
-  }
-
-  getDefaultV2Workflow(): string {
-    return `# Download Invoice
-
-Navigate to {{portal_url}}
-
-Click sidebar item whose visible text is exactly "Finance"
-
-Click nav labeled exactly "Documents"
-
-Assert heading is "Documents"
-
-Click nav labeled exactly "Statements"
-
-Assert heading is "Statements"
-
-Click the latest statement row
-
-Click button labeled exactly "Export PDF"
 
 Assert a PDF download or success toast
 `
