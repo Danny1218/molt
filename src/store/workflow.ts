@@ -106,21 +106,29 @@ export class WorkflowStore {
   }
 
   private getDefaultV1Workflow(): string {
-    return `# Download Invoice
+    return `---
+mode: testing
+max_steps: 30
+---
 
-Navigate to {{portal_url}}
+# Download newest invoice
 
-Click sidebar item whose visible text is exactly "Billing"
+## Open the portal
+Open {{portal_url}}.
 
-Click nav labeled exactly "Invoices"
+## Open Billing
+Click the sidebar item whose visible text is exactly "Billing".
 
-Assert heading is "Invoices"
+## Open Invoices
+Click the control whose visible text is exactly "Invoices".
+Verify the page heading is exactly "Invoices".
 
-Click the latest invoice row
+## Open the latest invoice
+Click the row for the latest invoice.
 
-Click button labeled exactly "Download"
-
-Assert a PDF download or success toast
+## Download
+Click the button labeled exactly "Download".
+Verify a success toast is visible or a PDF download started.
 `
   }
 }

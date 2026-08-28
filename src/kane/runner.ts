@@ -398,16 +398,28 @@ Your task is to explore the CURRENT UI and find the correct path to accomplish t
       return null
     }
 
-    let workflow = `# Download Invoice\n\nNavigate to ${portalUrl}\n\n`
+    let workflow = `---
+mode: testing
+max_steps: 30
+---
+
+# Download newest invoice
+
+## Open the portal
+Open ${portalUrl}.
+
+`
     
+    let stepCounter = 1
     for (const step of successfulSteps) {
       if (step.step && step.remark) {
-        // Use the exact labels from Kane's remarks
-        workflow += `${step.step}\n\n`
+        // Create a step section from Kane's actual actions
+        workflow += `## Step ${stepCounter}\n${step.step}\n\n`
+        stepCounter++
       }
     }
 
-    workflow += `Assert a PDF download or success toast\n`
+    workflow += `## Verify download\nVerify a success toast is visible or a PDF download started.\n`
 
     return workflow
   }
