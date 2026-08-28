@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node --test src/**/*.test.js",
-    "demo:reset": "node scripts/reset-demo.js"
+    "demo:reset": "node scripts/reset-demo.js",
+    "inspect:inbox": "node scripts/inspect-inbox.js"
   },
   "keywords": ["kane", "adversarial-testing", "browser-agents"],
   "author": "",
