@@ -34,7 +34,8 @@ export class RepairOrchestrator {
 
   async runWorkflowWithRepair(
     portalUrl: string,
-    currentWorkflowPath: string
+    currentWorkflowPath: string,
+    portalSkin: 'v1' | 'v2'
   ): Promise<KaneResult> {
     this.broadcast({ type: 'workflow_started' })
 
@@ -57,7 +58,7 @@ export class RepairOrchestrator {
     }
 
     // Failure detected - check if it's UI drift
-    if (this.isUIdrift(result)) {
+    if (this.isUIdrift(result, portalSkin)) {
       this.broadcast({
         type: 'workflow_failed',
         result,
@@ -84,7 +85,13 @@ export class RepairOrchestrator {
     return result
   }
 
-  private isUIdrift(result: KaneResult): boolean {
+  private isUIdrift(result: KaneResult, portalSkin: 'v1' | 'v2'): boolean {
+    // Any failed testmd run on v2 skin is UI drift
+    if (portalSkin === 'v2' && result.status === 'failed') {
+      return true
+    }
+
+    // Additional keyword-based detection as extra hint
     const driftKeywords = [
       'not found',
       'could not find',
@@ -130,13 +137,32 @@ export class RepairOrchestrator {
 
       // Extract generated workflow
       let newWorkflow: string | null = null
+      const runName = `molt-repair-${attempt}`
+      
       if (exploreResult.runDir) {
-        newWorkflow = await this.kane.extractTestMdFromRun(exploreResult.runDir)
+        newWorkflow = await this.kane.extractTestMdFromRun(runName, exploreResult.runDir)
       }
 
-      // Fallback: use default V2 workflow if Kane didn't generate one
+      // If Kane didn't generate a workflow, synthesize from step remarks
+      if (!newWorkflow && exploreResult.steps && exploreResult.steps.length > 0) {
+        newWorkflow = this.kane.synthesizeWorkflowFromSteps(exploreResult.steps, context.portalUrl)
+      }
+
+      // If we still don't have a workflow, fail the repair
       if (!newWorkflow) {
-        newWorkflow = this.store.getDefaultV2Workflow()
+        if (attempt === context.maxAttempts) {
+          this.broadcast({
+            type: 'repair_failed',
+            reason: 'Kane did not generate a workflow and synthesis failed',
+            attempts: attempt
+          })
+          return {
+            status: 'error',
+            summary: 'Could not extract or synthesize workflow from Kane run',
+            duration: '0s'
+          }
+        }
+        continue
       }
 
       // Enhance with assertions
@@ -150,7 +176,7 @@ export class RepairOrchestrator {
 
       // Rerun with patched workflow
       const verifyResult = await this.kane.runWorkflow(
-        await this.getCurrentWorkflowPath(),
+        this.store.getCurrentWorkflowPath(),
         context.portalUrl,
         (line) => {
           this.broadcast({ type: 'kane_progress', data: line })
@@ -183,10 +209,6 @@ export class RepairOrchestrator {
     }
   }
 
-  private async getCurrentWorkflowPath(): Promise<string> {
-    return this.store['currentWorkflowPath']
-  }
-
   private formatEvidence(result: KaneResult): Array<{
     timestamp: string
     status: string
@@ -198,8 +220,8 @@ export class RepairOrchestrator {
       status: result.status,
       summary: result.summary,
       files: result.runDir ? [
-        `${result.runDir}/run.ndjson`,
-        `${result.runDir}/Result.md`
+        `${result.runDir}/run-test/actions.ndjson`,
+        `${result.runDir}/output-*/Result.md`
       ] : undefined
     }]
   }
