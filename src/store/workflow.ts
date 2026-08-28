@@ -120,7 +120,7 @@ Open {{portal_url}}.
 Click the sidebar item whose visible text is exactly "Billing".
 
 ## Open Invoices
-Click the control whose visible text is exactly "Invoices".
+Click the sidebar item whose visible text is exactly "Invoices".
 Verify the page heading is exactly "Invoices".
 
 ## Open the latest invoice

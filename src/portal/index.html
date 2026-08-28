@@ -122,10 +122,39 @@
       cursor: pointer;
       font-size: 14px;
       transition: all 0.2s;
+      margin-top: 8px;
+      width: 100%;
     }
     
     .deploy-btn:hover {
       background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .admin-disclosure {
+      position: relative;
+    }
+    
+    .admin-disclosure summary {
+      cursor: pointer;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: white;
+      font-size: 14px;
+      list-style: none;
+    }
+    
+    .admin-disclosure summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    .admin-disclosure[open] summary {
+      border-radius: 6px 6px 0 0;
+    }
+    
+    .admin-disclosure[open] .deploy-btn {
+      border-radius: 0 0 6px 6px;
     }
     
     .main {
@@ -228,9 +257,12 @@
 <body class="v1">
   <div class="header">
     <h1>Business Portal</h1>
-    <button class="deploy-btn" onclick="toggleRedesign()">
-      🚀 DEPLOY REDESIGN
-    </button>
+    <details class="admin-disclosure">
+      <summary>Admin</summary>
+      <button class="deploy-btn" onclick="toggleRedesign()">
+        🚀 DEPLOY REDESIGN
+      </button>
+    </details>
   </div>
   
   <div class="main">
@@ -250,42 +282,49 @@
     
     const views = {
       v1: {
-        sidebar: ['Dashboard', 'Billing', 'Settings'],
+        sidebar: ['Dashboard', 'Billing', 'Invoices', 'Settings'],
         routes: {
           home: { title: 'Dashboard', content: 'Welcome to your dashboard' },
           billing: { 
-            title: 'Billing', 
+            title: 'Billing Overview', 
             nav: 'Billing',
-            content: 'billing-nav',
-            subroutes: ['Invoices', 'Payment Methods']
+            content: 'Billing overview content'
           },
           invoices: {
             title: 'Invoices',
-            nav: 'Billing > Invoices',
+            nav: 'Invoices',
             content: 'invoices-list'
+          },
+          settings: {
+            title: 'Settings',
+            nav: 'Settings',
+            content: 'Settings content'
           }
         }
       },
       v2: {
-        sidebar: ['Overview', 'Finance', 'Administration'],
+        sidebar: ['Overview', 'Finance', 'Documents', 'Statements', 'Administration'],
         routes: {
           home: { title: 'Overview', content: 'Welcome to your overview' },
           finance: {
             title: 'Finance',
             nav: 'Finance',
-            content: 'finance-nav',
-            subroutes: ['Documents', 'Transactions']
+            content: 'Finance overview content'
           },
           documents: {
             title: 'Documents',
-            nav: 'Finance > Documents',
-            content: 'documents-nav',
-            subroutes: ['Statements', 'Reports']
+            nav: 'Documents',
+            content: 'Document management content'
           },
           statements: {
             title: 'Statements',
-            nav: 'Finance > Documents > Statements',
+            nav: 'Statements',
             content: 'statements-list'
+          },
+          administration: {
+            title: 'Administration',
+            nav: 'Administration',
+            content: 'Administration content'
           }
         }
       }
@@ -323,10 +362,10 @@
     }
     
     function navigate(view) {
-      if (view === 'dashboard' || view === 'overview' || view === 'settings' || view === 'administration') {
+      if (view === 'dashboard' || view === 'overview') {
         currentView = 'home'
       } else {
-        currentView = view
+        currentView = view.toLowerCase()
       }
       renderContent()
     }
@@ -340,37 +379,7 @@
       
       let html = `<h2>${viewConfig.title}</h2>`
       
-      if (viewConfig.content === 'billing-nav') {
-        html += viewConfig.subroutes.map(route => 
-          `<div class="card">
-            <div class="card-info">
-              <h3>${route}</h3>
-              <p>Manage your ${route.toLowerCase()}</p>
-            </div>
-            <button class="btn-primary" onclick="navigate('${route.toLowerCase().replace(' ', '')}')">${route}</button>
-          </div>`
-        ).join('')
-      } else if (viewConfig.content === 'finance-nav') {
-        html += viewConfig.subroutes.map(route => 
-          `<div class="card">
-            <div class="card-info">
-              <h3>${route}</h3>
-              <p>View ${route.toLowerCase()}</p>
-            </div>
-            <button class="btn-primary" onclick="navigate('${route.toLowerCase()}')">${route}</button>
-          </div>`
-        ).join('')
-      } else if (viewConfig.content === 'documents-nav') {
-        html += viewConfig.subroutes.map(route => 
-          `<div class="card">
-            <div class="card-info">
-              <h3>${route}</h3>
-              <p>Access ${route.toLowerCase()}</p>
-            </div>
-            <button class="btn-primary" onclick="navigate('${route.toLowerCase()}')">${route}</button>
-          </div>`
-        ).join('')
-      } else if (viewConfig.content === 'invoices-list') {
+      if (viewConfig.content === 'invoices-list') {
         html += `
           <div class="card">
             <div class="card-info">
