@@ -124,13 +124,35 @@ app.get('/portal', (req, res) => {
       cart = {
         product: type === 'genuine' ? 'Genuine Model-X Industrial Filter' : 'Model-X Compatible Filter',
         unitPrice: type === 'genuine' ? 39.00 : 24.99,
-        quantity: qty
+        quantity: qty,
+        type: type
       };
       
       document.getElementById('cart').style.display = 'block';
       updateOrderSummary();
       window.scrollTo(0, document.body.scrollHeight);
     }
+    
+    // Sync catalog quantity changes to cart
+    document.addEventListener('input', function(e) {
+      if (e.target.id === 'qty-genuine' || e.target.id === 'qty-compatible') {
+        if (cart) {
+          const type = e.target.id.replace('qty-', '');
+          if (cart.type === type) {
+            cart.quantity = parseInt(e.target.value) || 1;
+            updateOrderSummary();
+          }
+        }
+      }
+      
+      // Sync cart quantity input to cart
+      if (e.target.id === 'cart-quantity') {
+        if (cart) {
+          cart.quantity = parseInt(e.target.value) || 1;
+          updateOrderSummary();
+        }
+      }
+    });
 
     function updateOrderSummary() {
       if (!cart) return;
@@ -143,7 +165,7 @@ app.get('/portal', (req, res) => {
       
       document.getElementById('order-summary').innerHTML = \`
         <p><strong>Product:</strong> \${cart.product}</p>
-        <p><strong>Quantity:</strong> \${cart.quantity}</p>
+        <p><strong>Quantity:</strong> <input type="number" id="cart-quantity" value="\${cart.quantity}" min="1" max="100" style="width: 60px; padding: 5px; font-size: 16px;"></p>
         <p><strong>Unit Price:</strong> $\${cart.unitPrice.toFixed(2)}</p>
         <p><strong>Subtotal:</strong> $\${subtotal.toFixed(2)}</p>
       \`;
