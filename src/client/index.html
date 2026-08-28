@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOLT Console</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #e4e4e7;
+      line-height: 1.6;
+    }
+    
+    .header {
+      border-bottom: 1px solid #27272a;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #3f3f46;
+      background: #18181b;
+      color: #e4e4e7;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: #27272a;
+      border-color: #52525b;
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+    
+    .btn-success {
+      background: #10b981;
+      border-color: #10b981;
+      color: white;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-v1 {
+      background: #3b82f620;
+      color: #3b82f6;
+    }
+    
+    .badge-v2 {
+      background: #10b98120;
+      color: #10b981;
+    }
+    
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .timeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      position: relative;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+    
+    .timeline-step.active {
+      opacity: 1;
+    }
+    
+    .timeline-step.complete {
+      opacity: 0.7;
+    }
+    
+    .timeline-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 40px;
+      width: 2px;
+      height: calc(100% - 20px);
+      background: #27272a;
+    }
+    
+    .timeline-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      background: #27272a;
+      color: #71717a;
+      z-index: 1;
+    }
+    
+    .timeline-step.active .timeline-icon {
+      background: #3b82f6;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+    
+    .timeline-step.complete .timeline-icon {
+      background: #10b981;
+      color: white;
+    }
+    
+    .timeline-step.failed .timeline-icon {
+      background: #ef4444;
+      color: white;
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+      }
+    }
+    
+    .timeline-content h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .timeline-content p {
+      font-size: 13px;
+      color: #a1a1aa;
+    }
+    
+    .info-grid {
+      display: grid;
+      gap: 12px;
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #27272a;
+    }
+    
+    .info-label {
+      font-size: 13px;
+      color: #a1a1aa;
+    }
+    
+    .info-value {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .diff-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .diff-panel {
+      background: #0a0a0a;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .diff-header {
+      font-weight: 600;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #27272a;
+    }
+    
+    .evidence-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .evidence-item {
+      padding: 12px;
+      background: #0a0a0a;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    
+    .evidence-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: #a1a1aa;
+    }
+    
+    .link {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    
+    .link:hover {
+      text-decoration: underline;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: #71717a;
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .kane-status {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    
+    .kane-status.warning {
+      background: #78350f20;
+      border: 1px solid #78350f;
+      color: #fbbf24;
+    }
+    
+    .kane-status.success {
+      background: #065f4620;
+      border: 1px solid #065f46;
+      color: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>MOLT</h1>
+    <div class="header-actions">
+      <button class="btn btn-success" id="deployBtn" onclick="deployRedesign()">
+        🚀 DEPLOY REDESIGN
+      </button>
+      <button class="btn btn-primary" id="runBtn" onclick="runWorkflow()" disabled>
+        ▶ Run Workflow
+      </button>
+    </div>
+  </div>
+  
+  <div class="main">
+    <div id="kaneStatus"></div>
+    
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">
+          <span>Execution Timeline</span>
+        </div>
+        <div class="timeline" id="timeline">
+          <div class="timeline-step active">
+            <div class="timeline-icon">◯</div>
+            <div class="timeline-content">
+              <h3>WORKFLOW READY</h3>
+              <p>Waiting to run workflow</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-icon">▶</div>
+            <div class="timeline-content">
+              <h3>KANE RUNNING</h3>
+              <p>Executing browser automation</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-icon">✓</div>
+            <div class="timeline-content">
+              <h3>RESULT</h3>
+              <p>Workflow completed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <div class="card">
+          <div class="card-title">Workflow Info</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Version</span>
+              <span class="info-value" id="versionInfo">v1</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Portal Skin</span>
+              <span class="info-value">
+                <span class="badge badge-v1" id="skinBadge">V1</span>
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Goal</span>
+              <span class="info-value">Download Invoice PDF</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Last Run</span>
+              <span class="info-value" id="lastRun">Never</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-top: 16px;">
+          <div class="card-title">Quick Links</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="/portal" target="_blank" class="link">Open Portal →</a>
+            <a href="#" class="link" onclick="showDiff(); return false;">View Workflow Diff →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Workflow Versions</div>
+      <div id="diffContainer" style="display: none;">
+        <div class="diff-container">
+          <div class="diff-panel">
+            <div class="diff-header">V1 (Original)</div>
+            <pre id="v1Content">Loading...</pre>
+          </div>
+          <div class="diff-panel">
+            <div class="diff-header">V2 (Repaired)</div>
+            <pre id="v2Content">Not yet generated</pre>
+          </div>
+        </div>
+      </div>
+      <div id="noDiff" class="empty-state">
+        <div class="empty-state-icon">📄</div>
+        <p>No workflow versions to compare yet</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Evidence Trail</div>
+      <div class="evidence-list" id="evidenceList">
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <p>No run evidence collected yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let ws = null
+    let currentSkin = 'v1'
+    let currentState = 'ready'
+    let kaneAvailable = false
+    
+    async function init() {
+      await checkKane()
+      await loadPortalSkin()
+      await loadWorkflow()
+      connectWebSocket()
+    }
+    
+    async function checkKane() {
+      try {
+        const res = await fetch('/api/kane/status')
+        const data = await res.json()
+        kaneAvailable = data.available
+        
+        const statusEl = document.getElementById('kaneStatus')
+        if (kaneAvailable) {
+          statusEl.innerHTML = `
+            <div class="kane-status success">
+              ✓ Kane CLI is configured and ready
+            </div>
+          `
+          document.getElementById('runBtn').disabled = false
+        } else {
+          statusEl.innerHTML = `
+            <div class="kane-status warning">
+              ⚠ Kane CLI not configured. Run: <code>kane-cli login --username YOUR_USERNAME --access-key YOUR_KEY</code>
+            </div>
+          `
+        }
+      } catch (err) {
+        console.error('Failed to check Kane status:', err)
+      }
+    }
+    
+    async function loadPortalSkin() {
+      try {
+        const res = await fetch('/api/portal/skin')
+        const data = await res.json()
+        currentSkin = data.skin
+        updateSkinBadge()
+      } catch (err) {
+        console.error('Failed to load portal skin:', err)
+      }
+    }
+    
+    function updateSkinBadge() {
+      const badge = document.getElementById('skinBadge')
+      badge.textContent = currentSkin.toUpperCase()
+      badge.className = `badge badge-${currentSkin}`
+    }
+    
+    async function loadWorkflow() {
+      try {
+        const res = await fetch('/api/workflow/current')
+        const data = await res.json()
+        document.getElementById('v1Content').textContent = data.content
+      } catch (err) {
+        console.error('Failed to load workflow:', err)
+      }
+    }
+    
+    function connectWebSocket() {
+      ws = new WebSocket(`ws://${location.host}/ws`)
+      
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        handleWebSocketMessage(data)
+      }
+      
+      ws.onclose = () => {
+        setTimeout(connectWebSocket, 3000)
+      }
+    }
+    
+    function handleWebSocketMessage(data) {
+      switch (data.type) {
+        case 'skin_changed':
+          currentSkin = data.skin
+          updateSkinBadge()
+          break
+        case 'workflow_started':
+          updateTimeline('running')
+          break
+        case 'workflow_completed':
+          updateTimeline('complete', data.result)
+          updateEvidence(data.evidence)
+          document.getElementById('lastRun').textContent = new Date().toLocaleTimeString()
+          break
+        case 'workflow_failed':
+          updateTimeline('failed', data.result)
+          updateEvidence(data.evidence)
+          document.getElementById('lastRun').textContent = new Date().toLocaleTimeString()
+          break
+        case 'repair_started':
+          updateTimeline('repairing')
+          break
+        case 'repair_completed':
+          updateTimeline('repair_complete', data.result)
+          loadWorkflow()
+          document.getElementById('versionInfo').textContent = 'v2'
+          break
+      }
+    }
+    
+    function updateTimeline(state, result = null) {
+      currentState = state
+      const timeline = document.getElementById('timeline')
+      
+      const states = {
+        ready: [
+          { icon: '◯', title: 'WORKFLOW READY', desc: 'Waiting to run workflow', status: 'active' }
+        ],
+        running: [
+          { icon: '✓', title: 'WORKFLOW READY', desc: 'Workflow loaded', status: 'complete' },
+          { icon: '▶', title: 'KANE RUNNING', desc: 'Executing browser automation', status: 'active' }
+        ],
+        complete: [
+          { icon: '✓', title: 'WORKFLOW READY', desc: 'Workflow loaded', status: 'complete' },
+          { icon: '✓', title: 'KANE RUNNING', desc: `Completed in ${result?.duration || 'N/A'}`, status: 'complete' },
+          { icon: '✓', title: 'PASS', desc: result?.summary || 'Workflow passed', status: 'complete' }
+        ],
+        failed: [
+          { icon: '✓', title: 'WORKFLOW READY', desc: 'Workflow loaded', status: 'complete' },
+          { icon: '✓', title: 'KANE RUNNING', desc: `Completed in ${result?.duration || 'N/A'}`, status: 'complete' },
+          { icon: '✗', title: 'FAIL — UI DRIFT DETECTED', desc: result?.reason || 'UI elements not found', status: 'failed' }
+        ],
+        repairing: [
+          { icon: '✓', title: 'WORKFLOW READY', desc: 'Workflow loaded', status: 'complete' },
+          { icon: '✓', title: 'KANE RUNNING', desc: 'First attempt failed', status: 'complete' },
+          { icon: '✗', title: 'FAIL — UI DRIFT DETECTED', desc: 'UI elements not found', status: 'failed' },
+          { icon: '🔧', title: 'AGENT DIAGNOSING', desc: 'Exploring current UI', status: 'active' }
+        ],
+        repair_complete: [
+          { icon: '✓', title: 'WORKFLOW READY', desc: 'Workflow loaded', status: 'complete' },
+          { icon: '✓', title: 'KANE RUNNING', desc: 'First attempt failed', status: 'complete' },
+          { icon: '✗', title: 'FAIL — UI DRIFT DETECTED', desc: 'UI elements not found', status: 'failed' },
+          { icon: '✓', title: 'AGENT DIAGNOSING', desc: 'UI exploration complete', status: 'complete' },
+          { icon: '✓', title: 'WORKFLOW PATCHED', desc: 'New workflow generated', status: 'complete' },
+          { icon: '✓', title: 'KANE RE-RUNNING', desc: 'Revalidating workflow', status: 'complete' },
+          { icon: '✓', title: 'PASS', desc: 'New workflow validated', status: 'complete' },
+          { icon: '🎉', title: 'NEW WORKFLOW PROMOTED', desc: 'v2 is now active', status: 'complete' }
+        ]
+      }
+      
+      const steps = states[state] || states.ready
+      timeline.innerHTML = steps.map(step => `
+        <div class="timeline-step ${step.status}">
+          <div class="timeline-icon">${step.icon}</div>
+          <div class="timeline-content">
+            <h3>${step.title}</h3>
+            <p>${step.desc}</p>
+          </div>
+        </div>
+      `).join('')
+    }
+    
+    function updateEvidence(evidence) {
+      const list = document.getElementById('evidenceList')
+      if (!evidence || evidence.length === 0) return
+      
+      list.innerHTML = evidence.map(item => `
+        <div class="evidence-item">
+          <div class="evidence-meta">
+            <span>${new Date(item.timestamp).toLocaleString()}</span>
+            <span>${item.status}</span>
+          </div>
+          <div>${item.summary}</div>
+          ${item.files ? `<div style="margin-top: 8px;">
+            ${item.files.map(f => `<a href="${f}" class="link" target="_blank">${f.split('/').pop()}</a>`).join(' • ')}
+          </div>` : ''}
+        </div>
+      `).join('')
+    }
+    
+    async function runWorkflow() {
+      if (!kaneAvailable) {
+        alert('Kane CLI is not configured. Please set up Kane first.')
+        return
+      }
+      
+      document.getElementById('runBtn').disabled = true
+      updateTimeline('running')
+      
+      try {
+        await fetch('/api/workflow/run', { method: 'POST' })
+      } catch (err) {
+        console.error('Failed to run workflow:', err)
+        alert('Failed to start workflow run')
+        document.getElementById('runBtn').disabled = false
+      }
+    }
+    
+    async function deployRedesign() {
+      const newSkin = currentSkin === 'v1' ? 'v2' : 'v1'
+      const confirmed = confirm(`Deploy redesign? Portal will switch to ${newSkin.toUpperCase()}`)
+      
+      if (confirmed) {
+        await fetch('/api/portal/skin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skin: newSkin })
+        })
+      }
+    }
+    
+    function showDiff() {
+      const diffContainer = document.getElementById('diffContainer')
+      const noDiff = document.getElementById('noDiff')
+      
+      if (diffContainer.style.display === 'none') {
+        diffContainer.style.display = 'block'
+        noDiff.style.display = 'none'
+      } else {
+        diffContainer.style.display = 'none'
+        noDiff.style.display = 'block'
+      }
+    }
+    
+    init()
+  </script>
+</body>
+</html>
