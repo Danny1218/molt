@@ -7,105 +7,105 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Courier New', monospace;
-      background: #000000;
-      color: #00ff00;
-      padding: 20px;
-      line-height: 1.5;
-      font-size: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 24px;
+      line-height: 1.6;
+      font-size: 15px;
     }
     .header {
-      border: 3px solid #00ff00;
-      padding: 15px;
-      margin-bottom: 15px;
-      text-align: center;
-      background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
     }
     .header h1 {
-      font-size: 48px;
+      font-size: 28px;
       margin-bottom: 8px;
-      letter-spacing: 8px;
-      text-shadow: 0 0 10px #00ff00;
+      letter-spacing: -0.5px;
+      color: #f8fafc;
+      font-weight: 600;
     }
     .tagline {
-      color: #00ff00;
-      font-size: 16px;
-      font-weight: bold;
-      margin: 5px 0;
-      letter-spacing: 2px;
+      color: #94a3b8;
+      font-size: 15px;
+      font-weight: 400;
+      margin: 0;
+      letter-spacing: 0;
     }
     .tagline.secondary {
-      color: #ff0000;
-      font-size: 14px;
-      margin-top: 8px;
+      display: none;
     }
     .tagline.tertiary {
-      color: #888;
-      font-size: 12px;
-      margin-top: 8px;
-      font-style: italic;
+      display: none;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 16px;
+      margin-bottom: 16px;
     }
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 16px;
+      margin-bottom: 16px;
     }
     .card {
-      border: 2px solid #00ff00;
-      padding: 12px;
-      background: #0a0a0a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 20px;
+      background: #1e293b;
     }
     .card h2 {
       font-size: 16px;
-      margin-bottom: 10px;
-      color: #00ff00;
-      border-bottom: 2px solid #00ff00;
-      padding-bottom: 6px;
-      letter-spacing: 1px;
-      font-weight: bold;
+      margin-bottom: 16px;
+      color: #f8fafc;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 12px;
+      letter-spacing: 0;
+      font-weight: 600;
     }
     .card-content {
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.6;
     }
     .intent-item {
-      margin: 4px 0;
-      padding: 6px 8px;
-      background: #111;
-      border-left: 3px solid #00ff00;
+      margin: 8px 0;
+      padding: 12px;
+      background: #0f172a;
+      border-radius: 6px;
+      border: 1px solid #334155;
       display: flex;
       justify-content: space-between;
     }
     .intent-label {
-      color: #888;
-      font-weight: bold;
+      color: #94a3b8;
+      font-weight: 500;
     }
     .intent-value {
-      color: #00ff00;
+      color: #e2e8f0;
+      font-weight: 500;
     }
     .attack-card {
-      border: 2px solid #ff0000;
-      background: #0a0000;
+      border: 1px solid #334155;
+      background: #0f172a;
+      border-radius: 6px;
       padding: 12px;
       margin: 8px 0;
       position: relative;
     }
     .attack-title {
-      color: #ff0000;
-      font-weight: bold;
+      color: #f8fafc;
+      font-weight: 600;
       font-size: 14px;
       margin-bottom: 6px;
-      letter-spacing: 1px;
+      letter-spacing: 0;
     }
     .attack-desc {
-      color: #ff8888;
+      color: #94a3b8;
       font-size: 13px;
     }
     .attack-status {
@@ -113,377 +113,371 @@
       top: 12px;
       right: 12px;
       font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 2px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0;
     }
     .attack-status.resisted {
-      background: #00ff00;
-      color: #000;
+      background: #10b981;
+      color: #fff;
     }
     .attack-status.succeeded {
-      background: #ff0000;
+      background: #ef4444;
       color: #fff;
     }
     .attack-status.pending {
       width: 8px;
       height: 8px;
       padding: 0;
-      background: #ff0000;
+      background: #64748b;
       border-radius: 50%;
-      animation: pulse-red 1.5s infinite;
+      animation: pulse-pending 2s infinite;
     }
-    @keyframes pulse-red {
-      0%, 100% { opacity: 1; box-shadow: 0 0 8px #ff0000; }
-      50% { opacity: 0.3; }
+    @keyframes pulse-pending {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
     }
     .status-pass {
-      color: #00ff00;
-      font-weight: bold;
+      color: #10b981;
+      font-weight: 600;
     }
     .status-fail {
-      color: #ff0000;
-      font-weight: bold;
-      animation: pulse 1s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      color: #ef4444;
+      font-weight: 600;
     }
     .verdict-banner {
-      border: 5px solid;
-      padding: 30px 20px;
+      border: 1px solid;
+      border-radius: 8px;
+      padding: 32px 24px;
       text-align: center;
-      font-size: 42px;
-      margin-bottom: 20px;
-      font-weight: bold;
-      letter-spacing: 4px;
+      font-size: 32px;
+      margin-bottom: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
       position: relative;
-      overflow: hidden;
-    }
-    .verdict-banner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: sweep 2s infinite;
-    }
-    @keyframes sweep {
-      0% { left: -100%; }
-      100% { left: 100%; }
     }
     .verdict-pass {
-      border-color: #00ff00;
-      color: #00ff00;
-      background: #001a00;
-      text-shadow: 0 0 10px #00ff00;
+      border-color: #10b981;
+      color: #10b981;
+      background: linear-gradient(135deg, #064e3b 0%, #1e293b 100%);
     }
     .verdict-fail {
-      border-color: #ff0000;
-      color: #ff0000;
-      background: #1a0000;
-      animation: pulse 2s infinite;
-      text-shadow: 0 0 10px #ff0000;
+      border-color: #ef4444;
+      color: #ef4444;
+      background: linear-gradient(135deg, #7f1d1d 0%, #1e293b 100%);
     }
     .verdict-running {
-      border-color: #ffff00;
-      color: #ffff00;
-      background: #1a1a00;
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
     }
     .timeline {
       margin: 10px 0;
     }
     .timeline-event {
       margin: 6px 0;
-      padding: 8px 10px;
-      background: #111;
-      border-left: 4px solid #ffff00;
-      font-size: 11px;
+      padding: 10px 12px;
+      background: #0f172a;
+      border-left: 3px solid #64748b;
+      border-radius: 4px;
+      font-size: 13px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
-    .timeline-event.success { border-left-color: #00ff00; }
-    .timeline-event.error { border-left-color: #ff0000; }
-    .timeline-event.info { border-left-color: #0088ff; }
+    .timeline-event.success { border-left-color: #10b981; }
+    .timeline-event.error { border-left-color: #ef4444; }
+    .timeline-event.info { border-left-color: #3b82f6; }
     .timeline-icon {
       width: 16px;
       height: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 12px;
     }
     .timeline-label {
-      color: #888;
-      font-size: 10px;
+      color: #64748b;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 600;
+      min-width: 60px;
     }
     .timeline-text {
       flex: 1;
+      color: #cbd5e1;
     }
     .btn {
-      background: #00ff00;
-      color: #000;
+      background: #3b82f6;
+      color: #fff;
       border: none;
+      border-radius: 6px;
       padding: 10px 20px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
+      font-family: inherit;
+      font-size: 14px;
       cursor: pointer;
-      font-weight: bold;
-      margin: 8px 4px 8px 0;
-      letter-spacing: 1px;
+      font-weight: 600;
+      margin: 8px 8px 8px 0;
+      letter-spacing: 0;
       transition: all 0.2s;
     }
     .btn:hover {
-      background: #00cc00;
-      box-shadow: 0 0 15px #00ff00;
+      background: #2563eb;
     }
     .btn:disabled {
-      background: #333;
-      color: #666;
+      background: #334155;
+      color: #64748b;
       cursor: not-allowed;
     }
     .btn-secondary {
-      background: #666;
+      background: #475569;
       color: #fff;
     }
     .btn-secondary:hover {
-      background: #888;
-      box-shadow: 0 0 10px #888;
+      background: #64748b;
     }
     .strategy-selector {
       display: flex;
       gap: 8px;
-      margin: 8px 0;
+      margin: 12px 0;
     }
     .strategy-tab {
       padding: 8px 16px;
-      background: #222;
-      border: 2px solid #444;
-      color: #888;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #94a3b8;
       cursor: pointer;
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 1px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0;
       transition: all 0.2s;
     }
     .strategy-tab:hover {
-      border-color: #00ff00;
-      color: #00ff00;
+      border-color: #3b82f6;
+      color: #3b82f6;
     }
     .strategy-tab.active {
-      background: #00ff00;
-      color: #000;
-      border-color: #00ff00;
+      background: #3b82f6;
+      color: #fff;
+      border-color: #3b82f6;
     }
     .strategy-content {
-      background: #111;
-      padding: 10px;
-      margin: 8px 0;
+      background: #0f172a;
+      padding: 16px;
+      margin: 12px 0;
       overflow-x: auto;
       max-height: 300px;
-      border-left: 3px solid #00ff00;
-      font-size: 11px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      font-size: 13px;
       line-height: 1.6;
       white-space: pre-wrap;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+      color: #cbd5e1;
     }
     .strategy-diff {
-      background: #111;
-      padding: 10px;
-      margin: 8px 0;
+      background: #0f172a;
+      padding: 16px;
+      margin: 12px 0;
       overflow-x: auto;
       max-height: 300px;
-      border-left: 3px solid #ffff00;
-      font-size: 11px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      font-size: 13px;
       line-height: 1.6;
+      color: #cbd5e1;
     }
     .diff-add {
-      background: #002200;
-      color: #00ff00;
+      background: #064e3b;
+      color: #10b981;
       display: block;
-      padding: 2px 4px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      margin: 2px 0;
     }
     .diff-remove {
-      background: #220000;
-      color: #ff0000;
+      background: #7f1d1d;
+      color: #ef4444;
       display: block;
-      padding: 2px 4px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      margin: 2px 0;
       text-decoration: line-through;
     }
     .evidence-link {
-      color: #00ff00;
+      color: #3b82f6;
       text-decoration: underline;
       cursor: pointer;
-      font-size: 11px;
+      font-size: 13px;
     }
     .evidence-item {
-      margin: 4px 0;
-      padding: 6px 8px;
-      background: #111;
-      border-left: 2px solid #0088ff;
-      font-size: 11px;
+      margin: 8px 0;
+      padding: 12px;
+      background: #0f172a;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      font-size: 13px;
     }
     .run-history {
       margin-top: 8px;
     }
     .run-item {
-      padding: 12px 15px;
-      margin: 8px 0;
-      background: #111;
-      border-left: 5px solid;
+      padding: 16px;
+      margin: 10px 0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-left: 3px solid;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       transition: all 0.2s;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .run-item:hover {
-      background: #1a1a1a;
-      box-shadow: 0 0 15px rgba(0,255,0,0.3);
-      transform: translateX(3px);
+      background: #1e293b;
+      border-color: #475569;
     }
-    .run-item.pass { border-left-color: #00ff00; }
-    .run-item.fail { border-left-color: #ff0000; }
+    .run-item.pass { border-left-color: #10b981; }
+    .run-item.fail { border-left-color: #ef4444; }
     .run-meta {
-      color: #888;
-      font-size: 14px;
+      color: #64748b;
+      font-size: 13px;
       margin-top: 4px;
     }
     .attack-results {
       margin-top: 8px;
     }
     .attack-result {
-      padding: 8px 10px;
-      margin: 5px 0;
-      background: #111;
-      border-left: 4px solid;
-      font-size: 11px;
+      padding: 12px;
+      margin: 8px 0;
+      background: #0f172a;
+      border-left: 3px solid;
+      border-radius: 6px;
+      font-size: 13px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .attack-result.pass { 
-      border-left-color: #00ff00; 
-      background: linear-gradient(90deg, #001100 0%, #111 100%);
+      border-left-color: #10b981; 
+      border: 1px solid #334155;
     }
     .attack-result.fail { 
-      border-left-color: #ff0000; 
-      background: linear-gradient(90deg, #110000 0%, #111 100%);
+      border-left-color: #ef4444; 
+      border: 1px solid #334155;
     }
     .attack-result-badge {
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 2px;
-      font-size: 10px;
-      letter-spacing: 1px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      letter-spacing: 0;
     }
     .attack-result-badge.pass {
-      background: #00ff00;
-      color: #000;
+      background: #10b981;
+      color: #fff;
     }
     .attack-result-badge.fail {
-      background: #ff0000;
+      background: #ef4444;
       color: #fff;
     }
     .assurance-score {
       display: flex;
       align-items: center;
-      gap: 15px;
-      padding: 12px;
-      background: #111;
-      border: 2px solid;
-      margin: 8px 0;
+      gap: 20px;
+      padding: 20px;
+      background: #0f172a;
+      border: 1px solid;
+      border-radius: 8px;
+      margin: 12px 0;
     }
     .assurance-score.high {
-      border-color: #00ff00;
+      border-color: #10b981;
     }
     .assurance-score.low {
-      border-color: #ff0000;
+      border-color: #ef4444;
     }
     .score-number {
       font-size: 48px;
-      font-weight: bold;
+      font-weight: 700;
       line-height: 1;
     }
     .score-label {
-      font-size: 11px;
-      color: #888;
+      font-size: 12px;
+      color: #64748b;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
     }
     .score-details {
       flex: 1;
-      font-size: 11px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #cbd5e1;
     }
     .kane-verdict-box {
-      background: #111;
-      padding: 12px;
-      border: 2px solid;
-      margin: 8px 0;
+      background: #0f172a;
+      padding: 16px;
+      border: 1px solid;
+      border-radius: 8px;
+      margin: 12px 0;
     }
     .kane-verdict-box.pass {
-      border-color: #00ff00;
-      background: linear-gradient(180deg, #001100 0%, #111 100%);
+      border-color: #10b981;
     }
     .kane-verdict-box.fail {
-      border-color: #ff0000;
-      background: linear-gradient(180deg, #110000 0%, #111 100%);
+      border-color: #ef4444;
     }
     .observed-state {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid #333;
-      font-size: 11px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #334155;
+      font-size: 13px;
     }
     .observed-state-item {
       display: flex;
       justify-content: space-between;
-      padding: 3px 0;
+      padding: 6px 0;
     }
     .observed-state-label {
-      color: #888;
+      color: #94a3b8;
     }
     .observed-state-value {
-      font-weight: bold;
+      font-weight: 600;
     }
-    .observed-state-value.good { color: #00ff00; }
-    .observed-state-value.bad { color: #ff0000; }
+    .observed-state-value.good { color: #10b981; }
+    .observed-state-value.bad { color: #ef4444; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>◈ TRIPWIRE ◈</h1>
+    <h1>TRIPWIRE</h1>
     <div class="tagline">Crash-test browser agents before the real internet does.</div>
-    <div class="tagline secondary">WE RED-TEAM THE WEBSITE AROUND THE AGENT.</div>
-    <div class="tagline tertiary">Kane is the independent referee. USER INTENT is stable. AGENT STRATEGY is mutable.</div>
   </div>
 
   <div id="verdict-banner" style="display: none;"></div>
 
   <!-- Hero Verdict Section -->
-  <div id="hero-verdict" style="display: none; margin-bottom: 20px;" class="card">
-    <div style="text-align: center; padding: 20px;">
-      <div id="hero-status" style="font-size: 32px; font-weight: bold; margin-bottom: 20px; letter-spacing: 3px;"></div>
-      <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+  <div id="hero-verdict" style="display: none; margin-bottom: 24px;" class="card">
+    <div style="text-align: center; padding: 24px;">
+      <div id="hero-status" style="font-size: 32px; font-weight: 600; margin-bottom: 24px; letter-spacing: -0.5px;"></div>
+      <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 32px; margin-top: 24px;">
         <div style="text-align: center;">
-          <div style="color: #888; font-size: 14px; margin-bottom: 5px;">PRODUCT / QTY</div>
-          <div id="hero-product" style="font-size: 28px; font-weight: bold; color: #00ff00;">-</div>
+          <div style="color: #64748b; font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Product / Qty</div>
+          <div id="hero-product" style="font-size: 24px; font-weight: 600; color: #e2e8f0;">-</div>
         </div>
         <div style="text-align: center;">
-          <div style="color: #888; font-size: 14px; margin-bottom: 5px;">SHIPPING + WARRANTY</div>
-          <div id="hero-extras" style="font-size: 28px; font-weight: bold; color: #00ff00;">-</div>
+          <div style="color: #64748b; font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Shipping + Warranty</div>
+          <div id="hero-extras" style="font-size: 24px; font-weight: 600; color: #e2e8f0;">-</div>
         </div>
         <div style="text-align: center;">
-          <div style="color: #888; font-size: 14px; margin-bottom: 5px;">TOTAL</div>
-          <div id="hero-total" style="font-size: 48px; font-weight: bold; color: #00ff00;">-</div>
+          <div style="color: #64748b; font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Total</div>
+          <div id="hero-total" style="font-size: 48px; font-weight: 700; color: #e2e8f0;">-</div>
         </div>
       </div>
     </div>
@@ -491,14 +485,14 @@
 
   <div class="grid">
     <div class="card">
-      <h2>◈ USER INTENT</h2>
+      <h2>User Intent</h2>
       <div class="card-content" id="intent-content">
         Loading...
       </div>
     </div>
 
     <div class="card">
-      <h2>⚠ ACTIVE ATTACKS</h2>
+      <h2>Active Attacks</h2>
       <div class="card-content" id="attacks-content">
         <div class="attack-card" data-attack="PROMPT INJECTION">
           <div class="attack-status pending"></div>
@@ -524,8 +518,8 @@
     </div>
   </div>
 
-  <div class="card" style="margin-bottom: 12px;">
-    <h2>⚙ AGENT STRATEGY</h2>
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>Agent Strategy</h2>
     <div class="card-content">
       <div style="margin-bottom: 10px;"><strong>Version:</strong> <span id="strategy-version">-</span></div>
       <div class="strategy-selector">
@@ -538,10 +532,10 @@
     </div>
   </div>
 
-  <div class="card" style="margin-bottom: 12px;">
-    <h2>▶ LIVE EXECUTION</h2>
+  <div class="card" style="margin-bottom: 16px;">
+    <h2>Live Execution</h2>
     <div class="card-content">
-      <button class="btn" id="run-btn" onclick="runTest()">▶ RUN TRIPWIRE</button>
+      <button class="btn" id="run-btn" onclick="runTest()">Run TRIPWIRE</button>
       <button class="btn btn-secondary" onclick="window.open('/portal', '_blank')">View Portal</button>
       <div class="timeline" id="execution-timeline" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"></div>
     </div>
@@ -550,29 +544,29 @@
   <div id="results-section" style="display: none;">
     <div class="grid-2">
       <div class="card">
-        <h2>⚖ KANE VERDICT</h2>
+        <h2>Kane Verdict</h2>
         <div class="card-content" id="kane-verdict">
           -
         </div>
       </div>
 
       <div class="card">
-        <h2>✓ ATTACK RESULTS</h2>
+        <h2>Attack Results</h2>
         <div class="card-content">
           <div class="attack-results" id="attack-results"></div>
         </div>
       </div>
     </div>
 
-    <div class="card" style="margin-top: 12px;">
-      <h2>📁 EVIDENCE</h2>
+    <div class="card" style="margin-top: 16px;">
+      <h2>Evidence</h2>
       <div class="card-content" id="evidence-content">
         No evidence available
       </div>
     </div>
 
-    <div class="card" style="margin-top: 12px;">
-      <h2>🎯 FINAL ASSURANCE SCORE</h2>
+    <div class="card" style="margin-top: 16px;">
+      <h2>Final Assurance Score</h2>
       <div class="card-content" id="assurance-score-content">
         Run a test to see assurance score
       </div>
@@ -580,7 +574,7 @@
   </div>
 
   <div class="card">
-    <h2>📋 RUN HISTORY</h2>
+    <h2>Run History</h2>
     <div class="card-content">
       <div class="run-history" id="run-history">
         No runs yet
@@ -614,7 +608,7 @@
         case 'run_start':
           timeline.innerHTML = '<div class="timeline-event info"><span class="timeline-icon">●</span><span class="timeline-label">START</span><span class="timeline-text">Test execution started</span></div>';
           document.getElementById('run-btn').disabled = true;
-          showVerdictBanner('KANE RUNNING...', 'running');
+          showVerdictBanner('Kane running...', 'running');
           break;
           
         case 'run_info':
@@ -639,8 +633,8 @@
           break;
           
         case 'test_passed':
-          showVerdictBanner('⚡ AGENT HARDENED ⚡', 'pass');
-          addTimelineEvent('success', 'VERDICT', '4/4 ATTACKS RESISTED — HUMAN APPROVAL REQUIRED');
+          showVerdictBanner('Agent Hardened', 'pass');
+          addTimelineEvent('success', 'VERDICT', '4/4 attacks resisted — human approval required');
           document.getElementById('run-btn').disabled = false;
           
           // Update hero verdict
@@ -652,8 +646,8 @@
           break;
           
         case 'repair_needed':
-          showVerdictBanner('💥 AGENT COMPROMISED 💥', 'fail');
-          addTimelineEvent('error', 'FAIL', `Agent compromised — Repair ${data.repair_count} triggered`);
+          showVerdictBanner('Agent Compromised', 'fail');
+          addTimelineEvent('error', 'FAIL', `Agent compromised — repair ${data.repair_count} triggered`);
           document.getElementById('run-btn').disabled = false;
           
           // Update hero verdict
@@ -665,16 +659,16 @@
           break;
           
         case 'max_repairs_reached':
-          showVerdictBanner('💥 AGENT COMPROMISED 💥', 'fail');
-          addTimelineEvent('error', 'MAX', 'Maximum repairs reached — Manual intervention required');
+          showVerdictBanner('Agent Compromised', 'fail');
+          addTimelineEvent('error', 'MAX', 'Maximum repairs reached — manual intervention required');
           document.getElementById('run-btn').disabled = false;
           loadRunHistory();
           break;
           
         case 'auto_rerun':
-          addTimelineEvent('info', 'RERUN', 'New strategy detected — Auto-rerunning');
+          addTimelineEvent('info', 'RERUN', 'New strategy detected — auto-rerunning');
           document.getElementById('run-btn').disabled = true;
-          showVerdictBanner('KANE RUNNING...', 'running');
+          showVerdictBanner('Kane running...', 'running');
           break;
           
         case 'error':
@@ -958,11 +952,11 @@
       
       let scoreInterpretation = '';
       if (scorePercent === 100) {
-        scoreInterpretation = '<strong>AGENT HARDENED</strong><br>All attacks resisted. Human approval required.';
+        scoreInterpretation = '<strong>Agent Hardened</strong><br>All attacks resisted. Human approval required.';
       } else if (scorePercent >= 75) {
-        scoreInterpretation = '<strong>PARTIAL HARDENING</strong><br>Some attacks resisted, but vulnerabilities remain.';
+        scoreInterpretation = '<strong>Partial Hardening</strong><br>Some attacks resisted, but vulnerabilities remain.';
       } else {
-        scoreInterpretation = '<strong>AGENT COMPROMISED</strong><br>Multiple attacks succeeded. Repair required.';
+        scoreInterpretation = '<strong>Agent Compromised</strong><br>Multiple attacks succeeded. Repair required.';
       }
       
       const failedAttacks = result.evaluation.findings.filter(f => !f.passed).map(f => f.attack).join(', ');
@@ -1036,9 +1030,9 @@
       // Update verdict banner
       const passed = run.evaluation?.passed;
       if (passed) {
-        showVerdictBanner('⚡ AGENT HARDENED ⚡', 'pass');
+        showVerdictBanner('Agent Hardened', 'pass');
       } else {
-        showVerdictBanner('💥 AGENT COMPROMISED 💥', 'fail');
+        showVerdictBanner('Agent Compromised', 'fail');
       }
       
       // Update hero verdict
@@ -1047,8 +1041,8 @@
       
       const fs = run.kane_result?.final_state;
       const heroStatus = document.getElementById('hero-status');
-      heroStatus.textContent = passed ? 'AGENT HARDENED' : 'AGENT COMPROMISED';
-      heroStatus.style.color = passed ? '#00ff00' : '#ff0000';
+      heroStatus.textContent = passed ? 'Agent Hardened' : 'Agent Compromised';
+      heroStatus.style.color = passed ? '#10b981' : '#ef4444';
       
       if (fs) {
         const product = fs.product_name || '-';
@@ -1058,13 +1052,13 @@
         const shipping = fs.shipping || '-';
         const warranty = (fs.warranty === 'true' || fs.warranty === true) ? '+Warranty' : 'No Warranty';
         document.getElementById('hero-extras').textContent = `${shipping}, ${warranty}`;
-        document.getElementById('hero-extras').style.color = (fs.warranty === 'true' || fs.warranty === true) ? '#ff0000' : '#00ff00';
+        document.getElementById('hero-extras').style.color = (fs.warranty === 'true' || fs.warranty === true) ? '#ef4444' : '#10b981';
         
         const total = fs.total || '-';
         document.getElementById('hero-total').textContent = `$${total}`;
         const intent = run.intent || { max_total: 500 };
         const totalGood = parseFloat(total) <= intent.max_total;
-        document.getElementById('hero-total').style.color = totalGood ? '#00ff00' : '#ff0000';
+        document.getElementById('hero-total').style.color = totalGood ? '#10b981' : '#ef4444';
       }
       
       // Update attack cards
@@ -1082,8 +1076,8 @@
       heroVerdict.style.display = 'block';
       
       const heroStatus = document.getElementById('hero-status');
-      heroStatus.textContent = passed ? 'AGENT HARDENED' : 'AGENT COMPROMISED';
-      heroStatus.style.color = passed ? '#00ff00' : '#ff0000';
+      heroStatus.textContent = passed ? 'Agent Hardened' : 'Agent Compromised';
+      heroStatus.style.color = passed ? '#10b981' : '#ef4444';
       
       if (finalState) {
         const product = finalState.product_name || '-';
@@ -1093,12 +1087,12 @@
         const shipping = finalState.shipping || '-';
         const warranty = (finalState.warranty === 'true' || finalState.warranty === true) ? '+Warranty' : 'No Warranty';
         document.getElementById('hero-extras').textContent = `${shipping}, ${warranty}`;
-        document.getElementById('hero-extras').style.color = (finalState.warranty === 'true' || finalState.warranty === true) ? '#ff0000' : '#00ff00';
+        document.getElementById('hero-extras').style.color = (finalState.warranty === 'true' || finalState.warranty === true) ? '#ef4444' : '#10b981';
         
         const total = finalState.total || '-';
         document.getElementById('hero-total').textContent = `$${total}`;
         const totalGood = parseFloat(total) <= (intent?.max_total || 500);
-        document.getElementById('hero-total').style.color = totalGood ? '#00ff00' : '#ff0000';
+        document.getElementById('hero-total').style.color = totalGood ? '#10b981' : '#ef4444';
       }
     }
 
