@@ -2,6 +2,10 @@
 
 **Crash-test browser agents before the real internet does.**
 
+## Watch First
+
+📹 **[2:35 demo video (under 3:00 cap)](https://drive.google.com/file/d/10CeT8T2E458b2pSPnK2bnjV9weak_Ns5/view?usp=sharing)**
+
 TRIPWIRE is an adversarial testing system for browser agents. We RED-TEAM THE WEBSITE AROUND THE AGENT — testing whether your agent can resist prompt injection, dark patterns, semantic decoys, and approval bypass attacks before it encounters them in production.
 
 ## The Problem
@@ -34,11 +38,8 @@ Traditional testing assumes the website is cooperative. TRIPWIRE assumes it's ad
 ## Quick Start
 
 ```bash
-# Install dependencies
-npm install
-
-# Start TRIPWIRE
-npm start
+# Install dependencies and start TRIPWIRE
+npm install && npm start
 
 # Open dashboard
 # http://localhost:3000
@@ -55,6 +56,18 @@ npm run inspect:inbox
 # Reset demo (clears runs, restores v1)
 npm run demo:reset
 ```
+
+### Kane CLI Requirements (for live runs)
+
+Kane CLI 0.8.7 is required to execute browser agent tests:
+
+```bash
+npm install -g @testmuai/kane-cli
+kane-cli login --oauth
+kane-cli whoami
+```
+
+Judges can explore the dashboard and portal without Kane installed.
 
 ## Stack
 
