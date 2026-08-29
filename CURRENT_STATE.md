@@ -114,10 +114,10 @@ public/index.html                        # Dashboard (observed state) ← UPDATE
 ## Git Status
 
 - Branch: `cursor/tripwire-1033` ✅ Pushed
-- PR #2: https://github.com/Danny1218/molt/pull/2 ✅ Draft
+- PR #2: https://github.com/Danny1218/molt/pull/2 ✅ Merged to main
 - Commits: 11 total (initial + 10 features/fixes)
 - Latest: `ddbdce9` - Real failure evidence and v2 strategy
-- Merge: ❌ NOT MERGED (per instructions)
+- Dashboard polish: ✅ On main
 
 ## Commit History (Recent)
 
