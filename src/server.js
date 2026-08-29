@@ -228,6 +228,25 @@ app.get('/api/tripwire/strategy/current', async (req, res) => {
   }
 });
 
+// API: Get specific strategy version
+app.get('/api/tripwire/strategy/:version', async (req, res) => {
+  try {
+    const version = req.params.version;
+    const filename = `${version}_test.md`;
+    const filepath = join(__dirname, '../data/tripwire/strategies', filename);
+    
+    const fs = await import('fs');
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ error: `Strategy ${version} not found` });
+    }
+    
+    const content = readFileSync(filepath, 'utf-8');
+    res.json({ version, content, filename });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // API: Run TRIPWIRE test
 app.post('/api/tripwire/run', async (req, res) => {
   try {
@@ -268,6 +287,24 @@ app.get('/api/tripwire/runs', async (req, res) => {
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
     res.json(runs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API: Get specific run by ID
+app.get('/api/tripwire/runs/:runId', async (req, res) => {
+  try {
+    const fs = await import('fs');
+    const runId = req.params.runId;
+    const filePath = join(__dirname, '../artifacts/runs', runId, 'kane.json');
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Run not found' });
+    }
+    
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    res.json({ id: runId, ...data });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
